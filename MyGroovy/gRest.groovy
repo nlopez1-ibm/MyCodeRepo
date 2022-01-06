@@ -1,5 +1,5 @@
 // Util to list DBB WebApp Collection > than a certain age (see cutOff var)
-	// Use Mode to control report vs real-delete
+// Use Mode to control report vs real-delete
 // Needs Curl from Rocket on USS
 // TODO - fix / escape in coll name 
 
@@ -9,15 +9,21 @@ import groovy.time.TimeCategory
 
 def js 		= new JsonSlurper()
 
-mode ="Reset"
-//mode ="Report"
+//mode ="Reset"
+mode ="Report"
 
-// use 0 to purge all
+// use - 0 to purge all
 Date cutOff	= new Date() - 0
-webApp          = "--user ADMIN:ADMIN https://9.65.242.173:9443/dbb/rest"
+webApp      = "--user ADMIN:ADMIN https://192.168.44.1:9443/dbb/rest"
 println "*** DBB WebApp $mode Collection(s) where lastUpdated > $cutOff ***"
 
 command = "curl --insecure $webApp/collection/minimal"
+
+// cli ver 
+// curl --insecure --user ADMIN:ADMIN https://192.168.88.113:9443/dbb/rest/collection/minimal
+
+
+
 apiOut 	= command.execute().text
 def collections	= js.parseText(command.execute().text)
 collections.each { collection ->

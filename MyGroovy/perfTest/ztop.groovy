@@ -1,5 +1,8 @@
-// MVSTools: NLopez 2020 
-// Desc:  TOP-like tool for USS OMVS resources. Output in csv format.                 
+orig moved to home nov 2021 
+
+
+// USSMON: NLopez 2020 
+// Desc:  TOP for USS  OMVS resources. Output in csv format.                 
 // Arg:   Jobname filter  ie, nlop* for all jobs starting nlop
 
 /* Notes: This sample shows how you could use the ZOAU and ISF Java Api's to 
@@ -19,12 +22,10 @@ import com.ibm.zoautil.types.*
 import com.ibm.zos.sdsf.core.ISFException
 import com.ibm.zos.sdsf.core.ISFRequestSettings
 import com.ibm.zos.sdsf.core.ISFBaseRunner
-//     DA SDSF Panel runner
-import com.ibm.zos.sdsf.core.ISFActiveRunner   
-//     PS SDSF panel runner 
-import com.ibm.zos.sdsf.core.ISFProcessRunner  
+import com.ibm.zos.sdsf.core.ISFActiveRunner	// DA panel runner - all Jobs and processes
+import com.ibm.zos.sdsf.core.ISFProcessRunner 	// PS panel runner - OMVS processes
 
-
+// 
 arg = args.length ? args[0] : System.getenv("USER")+ "*"
 sysWideStuff = SDSF_DA_JOBS(arg)
 OperCmd_Display_Syslog("display", "omvs,l",sysWideStuff)
@@ -37,12 +38,12 @@ def SDSF_DA_JOBS(String arg) {
 	if (arg.length() == 1 | arg.length() > 8 ) arg = "*"   	//suppress glob of * as input for all jobs 
 	
 	DA_settings = new ISFRequestSettings()
-	DA_settings.addNoModify()				// performance trick
+	DA_settings.addNoModify()									// performance trick
 	DA_settings.addISFLineLim(100)
-	DA_runner = new ISFActiveRunner(DA_settings)		// SDSF "DA" API
+	DA_runner = new ISFActiveRunner(DA_settings)				// SDSF "DA" API
 	
 	PS_settings = new ISFRequestSettings()
-	PS_settings.addNoModify()				// performance trick 
+	PS_settings.addNoModify()									// performance trick 
 	PS_settings.addISFLineLim(9000)
 	
 	//* stdout header csv format 
@@ -77,16 +78,16 @@ def SDSF_DA_JOBS(String arg) {
 		ps_PID  	= ps.getValue("pid")
 		ps_ASIDX	= ps.getValue("asidx")
 		ps_CPU		= ps.getValue("cpu")
-		ps_State	= ps.getValue("state")				// multple coded value - an R means it running 
+		ps_State	= ps.getValue("state")							// multple coded value - an R means it running 
 		ps_OWNERID	= ps.getValue("ownerid")
 		
 		// if the process is an ASIDX,  lookup the DA status  
 		if (ps_ASIDX) {	
 			DA_settings.addISFFilter("ASIDX eq $ps_ASIDX") 
-			def da = DA_runner.exec()				// DA Runner
+			def da = DA_runner.exec()								// DA Runner
 					 
 			if (da.size() == 1) {
-				sysCPU	= da[0].getValue("scpu")		// system wide CPU Util
+				sysCPU	= da[0].getValue("scpu")					// system wide CPU Util
 				da_real = da[0].getValue("real")
 				da_excp = da[0].getValue("excp")
 				da_cpu 	= da[0].getValue("cpupr")
@@ -110,13 +111,13 @@ def SDSF_DA_JOBS(String arg) {
 		}
 	}
 	
-	return "${sysCPU},${sysName}"						// return the last occurance of system level metrics 
+	return "${sysCPU},${sysName}"								// return the last occurance of system level metrics 
 }
 
 //*****************************************************
 //* ZOAU OPERCMD to Get Real-Time OMVS resource util   
 def OperCmd_Display_Syslog(String cmd, String opts, String sysStuff) {
-	proc  = OperatorCmd.execute(cmd,opts)					// OperatorCmd see ZOAU doc
+	proc  = OperatorCmd.execute(cmd,opts)						// OperatorCmd see ZOAU doc
 	 
 	if  (!proc.getReturnCode()) {
 		sysout=proc.getOutput().split("\n")				

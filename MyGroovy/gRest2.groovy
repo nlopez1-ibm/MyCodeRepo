@@ -16,7 +16,7 @@ String method = "POST"
 String userName = "ADMIN"
 String password = "ADMIN"
 String authentication = userName + ':' + password
-String host = "dbbdev.rtp.raleigh.ibm.com:9080/dbb/rest/logicalFile"
+String host = "dbbdev.192.168.44.1:9443/dbb/rest/logicalFile"
 String port = "9443";
 final String HTTP_MODE_POST = "POST";
 
