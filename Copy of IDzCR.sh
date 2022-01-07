@@ -1,6 +1,9 @@
 no laucnher !!! 
 
 
+testing remote diff
+
+
 
 
 #!/bin/sh
